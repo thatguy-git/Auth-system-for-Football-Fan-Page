@@ -1,18 +1,14 @@
 <?php
 session_start();
-include 'database.php'; // This loads your .env automatically now
+include 'database.php';
 
 $token = $_GET['token'] ?? '';
 $error = "";
 $success = "";
 
-// 1. CHECK TOKEN VALIDITY (Run this immediately)
 if (empty($token)) {
     die("Invalid request. No token provided.");
 }
-
-// Check if token exists and is not expired
-// NOW() is a SQL function that gets the current time
 $stmt = $conn->prepare("SELECT email FROM password_resets WHERE token = ? AND expires_at > NOW()");
 $stmt->bind_param("s", $token);
 $stmt->execute();
@@ -22,12 +18,9 @@ if ($result->num_rows === 0) {
     die("Invalid or expired link. Please request a new password reset.");
 }
 
-// Fetch the email associated with this valid token
 $reset_request = $result->fetch_assoc();
 $email = $reset_request['email'];
 
-
-// 2. HANDLE FORM SUBMISSION (Updating the password)
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     $new_password = $_POST['password'];
@@ -48,12 +41,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         if ($update->execute()) {
             
-            // CLEANUP: Delete the used token so it can't be used again
+            // Delete the used token 
             $del = $conn->prepare("DELETE FROM password_resets WHERE email = ?");
             $del->bind_param("s", $email);
             $del->execute();
-
-            // Redirect to login with success message
+            
             header("Location: login.php?reset=success");
             exit();
         } else {

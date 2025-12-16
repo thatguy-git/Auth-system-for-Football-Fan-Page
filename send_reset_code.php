@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     $email = $_POST['email'];
 
-    // 1. Check if email exists
+    //Check if email exists
     $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("sss", $email, $token, $expires_at);
         $stmt->execute();
 
-        // 4. Send Email
+        //Send Email
         $mail = new PHPMailer(true);
 
         try {
@@ -67,7 +67,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
     } else {
-        // Security: Don't tell them the email doesn't exist. Just say sent.
         echo "If this email exists, a reset link has been sent.";
     }
 }

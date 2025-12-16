@@ -3,19 +3,18 @@ session_start();
 include 'database.php';
 include 'google_config.php';
 
-// 1. Initialize variables
+
 $email = "";
 $password = "";
-$remember = false; // For the "Remember Me" checkbox
+$remember = false;
 $errors = [];
 
-// 2. Process Form Submission
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // Collect Input
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
-    $remember = isset($_POST['remember']); // Check if "Remember Me" was ticked
+    $remember = isset($_POST['remember']);
 
     // Validate
     if (empty($email)) {
@@ -36,11 +35,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($user = $result->fetch_assoc()) {
             if (password_verify($password, $user['password_hash'])) {
                 
-                // Login Success!
+                // Login Success
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['full_name'];
-                
-                // (Optional) Handle "Remember Me" cookie logic here later
                 
                 header("Location: dashboard.php");
                 exit();
