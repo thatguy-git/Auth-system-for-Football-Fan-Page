@@ -1,3 +1,10 @@
+<?php
+    require_once 'utils/session_manager.php';
+    SessionManager::start();
+    if (SessionManager::isLoggedIn()) {
+        // header("Location: index.php");
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,14 +30,31 @@
             </h1>
         </div>
 
-        <div class="flex items-center space-x-4">
-            <a href="login.php" class="text-white font-semibold hover:text-red-200 transition">
-                Login
-            </a>
-            <a href="signup.php" class="bg-white text-red-600 font-bold py-2 px-5 rounded-sm hover:bg-gray-100 transition shadow-lg">
-                Signup
-            </a>
-        </div>
+        <?php
+            if (!SessionManager::isLoggedIn()):
+        ?>
+            <div class="flex items-center space-x-4">
+                <a href="login.php" class="text-white font-semibold hover:text-red-200 transition">
+                    Login
+                </a>
+                <a href="signup.php" class="bg-white text-red-600 font-bold py-2 px-5 rounded-sm hover:bg-gray-100 transition shadow-lg">
+                    Signup
+                </a>
+            </div>
+        <?php
+            endif;
+        ?>
+        <?php
+            if (SessionManager::isLoggedIn()):
+        ?>
+            <div class="flex items-center space-x-4">
+                <a href="logout.php" class="text-white font-semibold hover:text-red-200 transition">
+                    Logout
+                </a>
+            </div>
+        <?php
+            endif;
+        ?>
     </div>
 
     <div class="border-t border-white opacity-50 mx-6"></div>
